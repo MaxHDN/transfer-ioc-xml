@@ -4,8 +4,9 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="
         http://www.springframework.org/schema/beans
-        https://www.springframework.org/schema/beans/spring-beans.xsd
-">
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
     <!--id标识对象，class是类的全限定类名-->
     <bean id="accountDao" class="com.duck.dao.impl.JdbcAccountDaoImpl">
         <property name="ConnectionUtils" ref="connectionUtils"/>
