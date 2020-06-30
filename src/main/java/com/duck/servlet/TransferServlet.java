@@ -5,6 +5,8 @@ import com.duck.factory.ProxyFactory;
 import com.duck.pojo.Result;
 import com.duck.service.TransferService;
 import com.duck.utils.JsonUtils;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,8 +28,16 @@ public class TransferServlet extends HttpServlet {
     // 从工厂获取委托对象（委托对象是增强了事务控制的功能）
 
     // 首先从BeanFactory获取到proxyFactory代理工厂的实例化对象
-    private ProxyFactory proxyFactory = (ProxyFactory) BeanFactory.getBean("proxyFactory");
-    private TransferService transferService = (TransferService) proxyFactory.getJdkProxy(BeanFactory.getBean("transferService")) ;
+//    private ProxyFactory proxyFactory = (ProxyFactory) BeanFactory.getBean("proxyFactory");
+//    private TransferService transferService = (TransferService) proxyFactory.getJdkProxy(BeanFactory.getBean("transferService")) ;
+    private ProxyFactory proxyFactory;
+    private TransferService transferService;
+    @Override
+    public void init(){
+        WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(this.getServletContext());
+        this.proxyFactory=  (ProxyFactory) webApplicationContext.getBean("proxyFactory");
+        this.transferService = (TransferService) proxyFactory.getJdkProxy(webApplicationContext.getBean("transferService"));
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

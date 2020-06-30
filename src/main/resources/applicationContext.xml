@@ -29,4 +29,85 @@
     <bean id="proxyFactory" class="com.duck.factory.ProxyFactory">
         <property name="TransactionManager" ref="transactionManager"/>
     </bean>
+
+    <!--默认通过构造函数实例化bean-->
+
+    <!--通过静态方法实例化bean-->
+    <bean id="staticWayInstanceBean" class="com.duck.factory.BeanFactory" factory-method="getTransferService"></bean>
+
+    <!--通过非静态方法实例化Bean-->
+    <bean id="beanFactory" class="com.duck.factory.BeanFactory"></bean>
+    <bean id="nonStaticWayInstanceBean" factory-bean="beanFactory" factory-method="getTransferServiceNonStatic"></bean>
+
+
+    <!--Spring容器注入方式：属性注入、构造函数注入-->
+    <!--属性注入-->
+    <bean id="attributeWayCar" class="com.duck.pojo.Car">
+        <property name="brand"><value>凯美瑞</value></property>
+        <property name="maxSpeed"><value>200</value></property>
+        <property name="price"><value>200000</value></property>
+    </bean>
+
+    <!--构造函数注入-->
+    <!--byType按照类型匹配入参-->
+    <bean id="constructorTypeWayCar" class="com.duck.pojo.Car">
+        <constructor-arg type="java.lang.String">
+            <value>雅阁</value>
+        </constructor-arg>
+        <constructor-arg type="int" value="200"/>
+        <constructor-arg type="double">
+            <value>200000</value>
+        </constructor-arg>
+    </bean>
+
+    <!--按照索引匹配入参-->
+    <bean id="constructorIndexWayCar" class="com.duck.pojo.Car">
+        <constructor-arg index="0">
+            <value>200</value>
+        </constructor-arg>
+        <constructor-arg index="1" value="雅阁"/>
+        <constructor-arg index="2">
+            <value>200000</value>
+        </constructor-arg>
+    </bean>
+
+    <!--联合使用类型和索引匹配入参-->
+    <bean id="constructorTypeAndIndexWayCar" class="com.duck.pojo.Car">
+        <constructor-arg index="0" type="int">
+            <value>200</value>
+        </constructor-arg>
+        <constructor-arg index="1" type="java.lang.String" value="雅阁"/>
+        <constructor-arg index="2" type="double">
+            <value>200000</value>
+        </constructor-arg>
+    </bean>
+
+    <!--Bean构造函数参数类型是可辩别的，可以采用简便方式注入-->
+    <bean id="constructorSimpleWayCar" class="com.duck.pojo.Boss">
+        <constructor-arg value="boss"/>
+        <constructor-arg ref="constructorTypeAndIndexWayCar"/>
+    </bean>
+
+
+    <!--集合参数输入-->
+    <bean id="house1" class="com.duck.pojo.House">
+        <property name="size" value="100"/>
+        <property name="address" value="大学城"/>
+    </bean>
+    <bean id="house2" class="com.duck.pojo.House">
+        <property name="size" value="120"/>
+        <property name="address" value="大学城"/>
+    </bean>
+
+
+    <bean id="myboss" class="com.duck.pojo.Boss">
+        <property name="name" value="boss"/>
+        <property name="car" ref="attributeWayCar"/>
+        <property name="houseList">
+            <list>
+                <ref bean="house1"/>
+                <ref bean="house2"/>
+            </list>
+        </property>
+    </bean>
 </beans>
