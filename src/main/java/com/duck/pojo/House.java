@@ -11,4 +11,12 @@ public class House {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    @Override
+    public String toString() {
+        return "House{" +
+                "size=" + size +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }

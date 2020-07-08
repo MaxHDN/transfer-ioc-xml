@@ -34,6 +34,7 @@ public class TransferServlet extends HttpServlet {
     private TransferService transferService;
     @Override
     public void init(){
+        // 获取监听器方式启动的spring容器
         WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(this.getServletContext());
         this.proxyFactory=  (ProxyFactory) webApplicationContext.getBean("proxyFactory");
         this.transferService = (TransferService) proxyFactory.getJdkProxy(webApplicationContext.getBean("transferService"));

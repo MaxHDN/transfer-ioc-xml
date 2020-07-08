@@ -3,16 +3,24 @@ package com.duck.dao.impl;
 import com.duck.dao.AccountDao;
 import com.duck.pojo.Account;
 import com.duck.utils.ConnectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 /**
- * @author 应癫
+ *  bean范围默认为singleton
  */
+@Lazy
+@Scope("singleton")
+@Repository("accountDao")
 public class JdbcAccountDaoImpl implements AccountDao {
 
+    @Autowired
     private ConnectionUtils connectionUtils;
 
     public void setConnectionUtils(ConnectionUtils connectionUtils) {

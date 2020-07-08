@@ -1,34 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--跟标签beans，里面配置一个又一个的bean子标签，每一个bean子标签都代表一个类的配置-->
 <beans  xmlns="http://www.springframework.org/schema/beans"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:aop="http://www.springframework.org/schema/aop"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="
-        http://www.springframework.org/schema/beans
-        https://www.springframework.org/schema/beans/spring-beans.xsd">
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+            https://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context
+            https://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/aop
+            https://www.springframework.org/schema/aop/spring-aop.xsd
 
+">
 
+    <!--注解扫描-->
+    <context:component-scan base-package="com.duck"/>
+
+    <!--使用注解 替换 xml配置-->
     <!--id标识对象，class是类的全限定类名-->
-    <bean id="accountDao" class="com.duck.dao.impl.JdbcAccountDaoImpl">
-        <property name="ConnectionUtils" ref="connectionUtils"/>
-    </bean>
-    <bean id="transferService" class="com.duck.service.impl.TransferServiceImpl">
-        <!--set+ name 之后锁定到传值的set方法了，通过反射技术可以调用该方法传入对应的值-->
-        <property name="AccountDao" ref="accountDao"></property>
-    </bean>
+<!--    <bean id="accountDao" class="com.duck.dao.impl.JdbcAccountDaoImpl">-->
+<!--        <property name="ConnectionUtils" ref="connectionUtils"/>-->
+<!--    </bean>-->
+
+    <!--使用注解 替换 xml配置-->
+<!--    <bean id="transferService" class="com.duck.service.impl.TransferServiceImpl">-->
+<!--        &lt;!&ndash;set+ name 之后锁定到传值的set方法了，通过反射技术可以调用该方法传入对应的值&ndash;&gt;-->
+<!--        <property name="AccountDao" ref="accountDao"></property>-->
+<!--    </bean>-->
 
 
+    <!--延迟加载使用属性lazy-init进行配置，默认为false-->
     <!--配置新增的三个Bean-->
-    <bean id="connectionUtils" class="com.duck.utils.ConnectionUtils"></bean>
+    <bean id="connectionUtils" class="com.duck.utils.ConnectionUtils" lazy-init="true"></bean>
 
     <!--事务管理器-->
     <bean id="transactionManager" class="com.duck.utils.TransactionManager">
         <property name="ConnectionUtils" ref="connectionUtils"/>
     </bean>
 
+    <!--使用注解 替换 xml配置-->
     <!--代理对象工厂-->
-    <bean id="proxyFactory" class="com.duck.factory.ProxyFactory">
-        <property name="TransactionManager" ref="transactionManager"/>
-    </bean>
+<!--    <bean id="proxyFactory" class="com.duck.factory.ProxyFactory">-->
+<!--        <property name="TransactionManager" ref="transactionManager"/>-->
+<!--    </bean>-->
+
+
 
     <!--默认通过构造函数实例化bean-->
 
@@ -89,7 +105,7 @@
     </bean>
 
 
-    <!--集合参数输入-->
+    <!--集合类型参数注入-->
     <bean id="house1" class="com.duck.pojo.House">
         <property name="size" value="100"/>
         <property name="address" value="大学城"/>
@@ -98,8 +114,19 @@
         <property name="size" value="120"/>
         <property name="address" value="大学城"/>
     </bean>
+    <bean id="child1" class="com.duck.pojo.Child">
+        <property name="name"><value>张三</value></property>
+        <property name="age" ><value>18</value></property>
+        <property name="sex" ><value>男</value></property>
+    </bean>
+    <bean id="child2" class="com.duck.pojo.Child">
+        <property name="name" value="李四" />
+        <property name="age"  value="16"/>
+        <property name="sex" value="男"/>
+    </bean>
 
 
+    <!--list集合-->
     <bean id="myboss" class="com.duck.pojo.Boss">
         <property name="name" value="boss"/>
         <property name="car" ref="attributeWayCar"/>
@@ -110,4 +137,197 @@
             </list>
         </property>
     </bean>
+
+    <!--set集合-->
+    <bean id="myboss1" class="com.duck.pojo.Boss">
+        <property name="name" value="boss"/>
+        <property name="car" ref="attributeWayCar"/>
+        <property name="children">
+            <set>
+                <ref bean="child1"/>
+                <ref bean="child2"/>
+            </set>
+        </property>
+    </bean>
+
+    <!--Map集合-->
+    <bean id="myboss2" class="com.duck.pojo.Boss">
+        <property name="name" value="boss"/>
+        <property name="car" ref="attributeWayCar"/>
+        <property name="jobs">
+            <map>
+                <entry>
+                    <key><value>AM</value></key>
+                    <value>看书</value>
+                </entry>
+                <entry>
+                    <key><value>M</value></key>
+                    <value>睡觉</value>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <!--Properties-->
+    <bean id="myboss3" class="com.duck.pojo.Boss">
+        <property name="name" value="boss"/>
+        <property name="car" ref="attributeWayCar"/>
+        <property name="mails">
+            <props>
+                <prop key="jobMail">jobmail@job.com</prop>
+                <prop key="lifeMail">lifeMail@job.com</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!--强类型集合-->
+    <bean id="myboss4" class="com.duck.pojo.Boss">
+        <property name="jobTime">
+            <map>
+                <entry>
+                    <key><value>AM</value></key>
+                    <value>2020070209</value>
+                </entry>
+                <entry>
+                    <key><value>PM</value></key>
+                    <value>2020070214</value>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+<!--    使用注解配置替换xml配置-->
+<!--    xml方式配置初始化方法和销毁方法-->
+<!--    <bean id="dog" class="com.duck.pojo.Dog" init-method="init" destroy-method="destroy"></bean>-->
+
+<!--    &lt;!&ndash;前置增强&ndash;&gt;-->
+<!--    <bean id="greetingAdvice" class="com.duck.proxy.GreetingBeforeAdvice"/>-->
+<!--    &lt;!&ndash;后置增强&ndash;&gt;-->
+<!--    <bean id="afterGreetingAdvice" class="com.duck.proxy.GreetingAfterAdvice"/>-->
+<!--    &lt;!&ndash;环绕增强&ndash;&gt;-->
+<!--    <bean id="greetingInterceptor" class="com.duck.proxy.GreetingInterceptor"/>-->
+<!--    <bean id="target" class="com.duck.pojo.NaiveWaiter"/>-->
+<!--    <bean id="sellerTarget" class="com.duck.pojo.Seller"/>-->
+<!--    <bean id="waiter" class="org.springframework.aop.framework.ProxyFactoryBean">-->
+<!--        <property name="targetName" value="target"/>-->
+<!--        <property name="interceptorNames" value="greetingAdvice,afterGreetingAdvice,greetingInterceptor" />-->
+<!--        &lt;!&ndash;配置使用CGlib动态代理&ndash;&gt;-->
+<!--        <property name="proxyTargetClass" value="true"/>-->
+
+<!--        &lt;!&ndash;配置使用jdk动态代理&ndash;&gt;-->
+<!--        &lt;!&ndash;        <property name="proxyInterfaces" value="com.duck.pojo.Waiter"></property>&ndash;&gt;-->
+<!--    </bean>-->
+
+<!--    &lt;!&ndash;定义静态方法名匹配切面&ndash;&gt;-->
+<!--    <bean id="greetingAdvisor" class="com.duck.proxy.GreetingAdvisor">-->
+<!--        <property name="advice" ref="greetingAdvice"></property>-->
+<!--    </bean>-->
+<!--    <bean id="waiterByAdvisor" class="org.springframework.aop.framework.ProxyFactoryBean">-->
+<!--        <property name="targetName" value="target"/>-->
+<!--        <property name="interceptorNames" value="greetingAdvisor" />-->
+<!--        &lt;!&ndash;配置使用CGlib动态代理&ndash;&gt;-->
+<!--        <property name="proxyTargetClass" value="true"/>-->
+
+<!--        &lt;!&ndash;配置使用jdk动态代理&ndash;&gt;-->
+<!--        &lt;!&ndash;        <property name="proxyInterfaces" value="com.duck.pojo.Waiter"></property>&ndash;&gt;-->
+<!--    </bean>-->
+<!--    <bean id="seller" class="org.springframework.aop.framework.ProxyFactoryBean">-->
+<!--        <property name="targetName" value="sellerTarget"/>-->
+<!--        <property name="interceptorNames" value="greetingAdvisor" />-->
+<!--        &lt;!&ndash;配置使用CGlib动态代理&ndash;&gt;-->
+<!--        <property name="proxyTargetClass" value="true"/>-->
+
+<!--        &lt;!&ndash;配置使用jdk动态代理&ndash;&gt;-->
+<!--        &lt;!&ndash;        <property name="proxyInterfaces" value="com.duck.pojo.Waiter"></property>&ndash;&gt;-->
+<!--    </bean>-->
+
+<!--    &lt;!&ndash;静态正则表达式方法匹配切面&ndash;&gt;-->
+<!--    <bean id="regexAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">-->
+<!--        <property name="advice" ref="greetingAdvice"/>-->
+<!--        &lt;!&ndash;用正则表达式定义目标类全限定方法的匹配字符串&ndash;&gt;-->
+<!--        <property name="patterns">-->
+<!--            <list>-->
+<!--                <value>.*greet.*</value>-->
+<!--            </list>-->
+<!--        </property>-->
+<!--    </bean>-->
+<!--    <bean id="waiterByRegexAdvisor" class="org.springframework.aop.framework.ProxyFactoryBean">-->
+<!--        <property name="targetName" value="target"/>-->
+<!--        <property name="interceptorNames" value="regexAdvisor" />-->
+<!--        &lt;!&ndash;配置使用CGlib动态代理&ndash;&gt;-->
+<!--        <property name="proxyTargetClass" value="true"/>-->
+<!--    </bean>-->
+<!--    <bean id="regexSeller" class="org.springframework.aop.framework.ProxyFactoryBean">-->
+<!--        <property name="targetName" value="sellerTarget"/>-->
+<!--        <property name="interceptorNames" value="regexAdvisor" />-->
+<!--        &lt;!&ndash;配置使用CGlib动态代理&ndash;&gt;-->
+<!--        <property name="proxyTargetClass" value="true"/>-->
+<!--    </bean>-->
+
+<!--    &lt;!&ndash;动态切面&ndash;&gt;-->
+<!--    <bean id="dynamicPointcut" class="com.duck.proxy.GreetingDynamicPoincut"/>-->
+<!--    <bean id="dynamicAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">-->
+<!--        <property name="pointcut" ref="dynamicPointcut"/>-->
+<!--        <property name="advice" ref="greetingAdvice"/>-->
+<!--    </bean>-->
+
+<!--    <bean id="dynamicWaiter" class="org.springframework.aop.framework.ProxyFactoryBean">-->
+<!--        <property name="targetName" value="target"/>-->
+<!--        <property name="interceptorNames" value="dynamicAdvisor" />-->
+<!--        &lt;!&ndash;配置使用CGlib动态代理&ndash;&gt;-->
+<!--        <property name="proxyTargetClass" value="true"/>-->
+<!--    </bean>-->
+<!--    <bean id="dynamicSeller" class="org.springframework.aop.framework.ProxyFactoryBean">-->
+<!--        <property name="targetName" value="sellerTarget"/>-->
+<!--        <property name="interceptorNames" value="dynamicAdvisor" />-->
+<!--        &lt;!&ndash;配置使用CGlib动态代理&ndash;&gt;-->
+<!--        <property name="proxyTargetClass" value="true"/>-->
+<!--    </bean>-->
+
+<!--    &lt;!&ndash;自动创建代理&ndash;&gt;-->
+<!--    <bean id="autoWaiter" class="com.duck.pojo.NaiveWaiter"/>-->
+<!--    <bean id="autoSeller" class="com.duck.pojo.Seller"/>-->
+
+<!--    &lt;!&ndash;BeanNameAutoProxyCreator&ndash;&gt;-->
+<!--    <bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">-->
+<!--        <property name="beanNames" value="autoWaiter,autoSeller"/>-->
+<!--        <property name="interceptorNames" value="greetingAdvisor"/>-->
+<!--        <property name="optimize" value="true"/>-->
+<!--    </bean>-->
+
+    <!--DefaultAdvisorAutoProxyCreator-->
+    <!--测试下面注释的内容，需要将其他的全部注释掉-->
+<!--    <bean id="waiter" class="com.duck.pojo.NaiveWaiter"/>-->
+<!--    <bean id="greetingAdvice" class="com.duck.proxy.GreetingBeforeAdvice"/>-->
+<!--    <bean id="greetingStaticAdvisor" class="com.duck.proxy.GreetingStaticAdvisor">-->
+<!--        <property name="advice" ref="greetingAdvice"/>-->
+<!--    </bean>-->
+<!--    <bean class ="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>-->
+
+    <!--Aspect注解定义切面，使用自动代理创建器创建代理-->
+<!--    <bean id="aspectNaiveWaiter" class="com.duck.pojo.NaiveWaiter"/>-->
+<!--    <bean class="com.duck.proxy.PreGreetingAspect"/>-->
+<!--    <bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator"/>-->
+
+    <!--基于@AspectJ切面驱动器-->
+<!--    <aop:aspectj-autoproxy/>-->
+<!--    <bean id="aspectNaiveWaiter" class="com.duck.pojo.NaiveWaiter"/>-->
+<!--    <bean class="com.duck.proxy.PreGreetingAspect"/>-->
+
+    <!--基于Schema配置切面-->
+    <!--代理类-->
+    <bean id="naiveWaiter" class="com.duck.pojo.NaiveWaiter"/>
+    <!--切面类-->
+    <bean id="adviceMethods" class="com.duck.proxy.AdviceMethods"/>
+    <aop:config>
+        <!--定义切面，ref指向切面类引用-->
+        <aop:aspect ref="adviceMethods">
+            <!--配置命名切点-->
+            <aop:pointcut id="servingToPointcut" expression="execution(* serveTo(..))"/>
+
+            <!--定义增强类型和切点-->
+            <aop:before method="preGreeting" pointcut="execution(* greetTo(..))"/>
+            <aop:after-returning method="afterReturning" pointcut-ref="servingToPointcut"/>
+        </aop:aspect>
+    </aop:config>
 </beans>

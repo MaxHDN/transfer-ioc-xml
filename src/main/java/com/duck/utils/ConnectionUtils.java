@@ -1,5 +1,7 @@
 package com.duck.utils;
 
+import org.springframework.stereotype.Component;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 

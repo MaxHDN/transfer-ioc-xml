@@ -5,6 +5,7 @@ import com.duck.pojo.Account;
 /**
  * @author 应癫
  */
+
 public interface AccountDao {
 
     Account queryAccountByCardNo(String cardNo) throws Exception;

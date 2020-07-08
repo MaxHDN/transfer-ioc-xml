@@ -2,7 +2,6 @@ package com.duck.factory;
 
 import com.duck.dao.AccountDao;
 import com.duck.dao.impl.JdbcAccountDaoImpl;
-import com.duck.service.TransferService;
 import com.duck.service.impl.TransferServiceImpl;
 
 public class BeanFactory {

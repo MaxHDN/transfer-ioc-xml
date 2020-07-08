@@ -3,17 +3,27 @@ package com.duck.service.impl;
 import com.duck.dao.AccountDao;
 import com.duck.pojo.Account;
 import com.duck.service.TransferService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 应癫
  */
+@Service("transferService")
 public class TransferServiceImpl implements TransferService {
 
     //private AccountDao accountDao = new JdbcAccountDaoImpl();
 
     // private AccountDao accountDao = (AccountDao) BeanFactory.getBean("accountDao");
 
-    // 最佳状态
+    // @Autowired的required属性默认为true，要求必须匹配bean，否则报异常
+    // 如果希望Spring容器即使找不到匹配的bean注入，也不要抛异常，可以使用@Autowired(required=false)进行配置
+    // 容器中如果有一个以上相同类型的bean时，可以通过@Qualifier("beanId")来确定时哪哪一个
+    @Lazy
+    @Autowired
+    @Qualifier("accountDao")
     private AccountDao accountDao;
 
     // 构造函数传值/set方法传值
